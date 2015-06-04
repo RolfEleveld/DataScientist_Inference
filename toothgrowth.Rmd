@@ -1,0 +1,77 @@
+---
+title: "Tootgrowth Analysis"
+author: "Rolf Eleveld"
+date: "Monday, May 25, 2015"
+output: word_document
+---
+
+#analysis of tooth growth data
+Generic analysis of toothgrowth data
+
+##processing data
+Loading data
+```{r, ech0=FALSE}
+library(UsingR)
+data(ToothGrowth) 
+```
+
+Initial analysis of tooth growth
+```{r}
+dim(ToothGrowth)
+```
+Contains 3 dimensions and 60 findings in total
+
+```{r}
+names(ToothGrowth)
+```
+"len", "supp", and "dose" are column names
+
+Getting a summary
+```{r}
+summary(ToothGrowth)
+```
+There are 2 levels on the Supplement
+
+##histograms
+Seeing a histogram of the values
+```{r}
+par(mfrow = c(1, 3))
+hist(ToothGrowth$len)
+hist(ToothGrowth$dose)
+```
+
+Looks like dose is discrete as well
+```{r}
+unique(ToothGrowth$dose)
+```
+We see there are 3 unique values here.
+
+Looks like the data uses 2 segments for treatment with a supplement and having 3 doses on each.
+lets see each one separate as a confidence interval
+##Confidence and p-values
+```{r}
+#treatment on OJ
+X0<-ToothGrowth[ToothGrowth$supp=="OJ",c(1,3)]
+#treatment on VC
+Y0<-ToothGrowth[ToothGrowth$supp=="VC",c(1,3)]
+summary(lm(X0$len ~ X0$dose))
+summary(lm(Y0$len ~ Y0$dose))
+```
+
+Both show very small p values hence without knowing what the supplement was I can say that there is very little support for this study to take the supplement for growth of teeth.
+
+##Plot of supplement "OJ"
+```{r, echo=FALSE, fig.height=6, fig.width=6}
+g <- ggplot(data = X0, aes(x = len)) 
+g <- g + geom_histogram(aes(y = ..density..), fill = "lightblue", binwidth=1, colour = "black")
+g <- g + geom_density(size = 2, colour = "black")
+g
+```
+
+##Plot of supplement "VC"
+```{r, echo=FALSE, fig.height=6, fig.width=6}
+g <- ggplot(data = Y0, aes(x = len)) 
+g <- g + geom_histogram(aes(y = ..density..), fill = "lightblue", binwidth=1, colour = "black")
+g <- g + geom_density(size = 2, colour = "black")
+g
+```

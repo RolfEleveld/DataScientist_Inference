@@ -1,0 +1,57 @@
+---
+title: "Comparison Exponential Distribution and Central Limit Theorem"
+author: "Rolf Eleveld"
+date: "Sunday, May 24, 2015"
+output: word_document
+---
+
+#Comparison Exponential Distribution and Central Limit Theorem
+##by Rolf Eleveld
+
+##Summary
+This report investigates the exponential distribution in R and compares it with the Central Limit Theorem. Using 1000 experiments and taking the average of 40 samples with the R function rexp(n,lambda). The central limit theorem states that for large n the average means results in a bell shaped Normal distribution. 
+
+
+##Simlations
+This report will gather the data for 1000 simulations and take the average of 40 samples of the rexp(n, lambda) function. 
+The exponential distribution can be simulated in R with rexp(n, lambda) where lambda is the rate parameter. The mean of exponential distribution is 1/lambda and the standard deviation is also 1/lambda. Set lambda = 0.2 for all of the simulations. You will investigate the distribution of averages of 40 exponentials. Note that you will need to do a thousand simulations.
+
+###Generating data
+```{r}
+nosim <- 1000
+n<-40
+lambda <- 0.2
+funcmean = 1/lambda
+standard_deviation<-1/lambda
+standard_error<-standard_deviation/sqrt(n)
+rexp_means = numeric(length=nosim)
+for (i in 1:nosim) {
+    rexp_means[i] <- (mean(rexp(n, lambda)) - funcmean) / standard_error
+}
+```
+
+###Show the sample mean and compare it to the theoretical mean of the distribution.
+The means are already subtracted as is common in the Central Limit Theorem. The histogram shows fairly normal distributed data.
+```{r}
+hist(rexp_means,xlab="SD")
+```
+
+###Show how variable the sample is (via variance) and compare it to the theoretical variance of the distribution.
+The variance of the mean is defined in the central limit theorem by sigma squared divided by n
+```{r}
+c(variance = var(rexp_means), CLT_variance = standard_deviation^2/n)
+```
+Which states that the tails are wider than from the rexp function than purely defined by the CLT.
+
+###Show that the distribution is approximately normal.
+The number of measurements is from a sample of 40 taken 1000 times. thehistogram below is the measure overlaid with a normal distribution curve.
+```{r}
+hist(rexp_means,xlab="SD", prob=TRUE)
+curve(dnorm(x, mean=0, sd=1), add=TRUE, col="red")
+```
+
+###Sample Mean versus Theoretical Mean
+The average deviation from the theoretical mean 5 and the sampled means is: 
+```{r}
+c(sample_mean_deviation = mean(rexp_means))
+```
